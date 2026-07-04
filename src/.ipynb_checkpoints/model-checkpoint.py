@@ -16,6 +16,7 @@ class CNN(nn.Module):
             kernel_size=2,
             stride=2
         )
+        self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
         self.conv2 = nn.Conv2d(
             in_channels=32, 
             out_channels=64,
@@ -23,11 +24,10 @@ class CNN(nn.Module):
             padding=1
         )
         self.flatten = nn.Flatten()
-        self.fc1 = nn.Linear(
-            64 * 56 * 56,
-            128
-        )
-                
+        self.fc1 = nn.Linear(64, 128)
+        self.dropout = nn.Dropout(0.5)
+        self.fc2 = nn.Linear(128, NUM_CLASSES)
+        
     def forward(self, x):
         
         x = self.conv1(x)
@@ -35,6 +35,29 @@ class CNN(nn.Module):
         x = self.pool(x)
 
         x = self.conv2(x)
-        x = self.pool(self.relu(x))
+        x = self.relu(x)
+        x = self.pool(x)
+
+        x = self.avgpool(x)
+
+        x = self.flatten(x)
+
+        x = self.fc1(x)
+        x = self.relu(x)
+
+        x = self.dropout(x)
+
+        x = self.fc2(x)
         
         return x
+
+
+
+
+
+
+
+
+
+
+        
