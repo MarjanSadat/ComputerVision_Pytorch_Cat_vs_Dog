@@ -13,6 +13,8 @@ criterion = nn.CrossEntropyLoss()
 
 optimizer = optim.Adam(model.parameters(),lr=LEARNING_RATE)
 
+best_valid_loss = float("inf")
+
 for epochs in range(NUM_EPOCHS):
     
     model.train()
@@ -60,7 +62,13 @@ for epochs in range(NUM_EPOCHS):
         f"Valid Loss: {valid_loss:.4f}"
     )
 
+    if valid_loss < best_valid_loss:
 
+        best_valid_loss = valid_loss
+    
+        torch.save(model.state_dict(), "best_model.pth")
+    
+        print("Best model saved!")
 
 
 
