@@ -2,7 +2,7 @@ import torch.nn as nn
 from config import NUM_CLASSES
 
 class CNN(nn.Module):
-    def __inti__(self):
+    def __init__(self):
         super().__init__()
 
         self.conv1 = nn.Conv2d(
@@ -11,6 +11,7 @@ class CNN(nn.Module):
             kernel_size=3,
             padding=1
         )
+        self.bn1 = nn.BatchNorm2d(32)
         self.relu = nn.ReLU()
         self.pool = nn.MaxPool2d(
             kernel_size=2,
@@ -23,18 +24,21 @@ class CNN(nn.Module):
             kernel_size=3,
             padding=1
         )
+        self.bn2 = nn.BatchNorm2d(64)
         self.flatten = nn.Flatten()
         self.fc1 = nn.Linear(64, 128)
-        self.dropout = nn.Dropout(0.5)
+        self.dropout = nn.Dropout(0.3)
         self.fc2 = nn.Linear(128, NUM_CLASSES)
         
     def forward(self, x):
         
         x = self.conv1(x)
+        x = self.bn1(x)
         x = self.relu(x)
         x = self.pool(x)
 
         x = self.conv2(x)
+        x = self.bn2(x)
         x = self.relu(x)
         x = self.pool(x)
 

@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 
 from model import CNN
-from config import DEVICE, LEARNING_RATE, NUM_EPOCHS
+from config import DEVICE, LEARNING_RATE, EPOCHS, MODEL_PATH
 from dataset import train_loader, valid_loader
 
 model = CNN()
@@ -15,7 +15,7 @@ optimizer = optim.Adam(model.parameters(),lr=LEARNING_RATE)
 
 best_valid_loss = float("inf")
 
-for epochs in range(NUM_EPOCHS):
+for epoch in range(EPOCHS):
     
     model.train()
     running_loss = 0.0
@@ -46,12 +46,12 @@ for epochs in range(NUM_EPOCHS):
     
     epoch_loss = running_loss / len(train_loader)
     train_accuracy = 100 * correct / total
-    print(
-        f"Epoch [{epoch+1}/{NUM_EPOCHS}] | "
-        f"Train Loss: {epoch_loss:.4f} | "
-        f"Train Acc: {train_accuracy:.2f}% | "
-        f"Valid Loss: {valid_loss:.4f}"
-    )
+    # print(
+    #     f"Epoch [{epoch+1}/{EPOCHS}] | "
+    #     f"Train Loss: {epoch_loss:.4f} | "
+    #     f"Train Acc: {train_accuracy:.2f}% | "
+    #     # f"Valid Loss: {valid_loss:.4f}"
+    # )
 
     model.eval()
 
@@ -79,7 +79,7 @@ for epochs in range(NUM_EPOCHS):
     valid_accuracy = 100 * valid_correct / valid_total
     
     print(
-        f"Epoch [{epoch+1}/{NUM_EPOCHS}] | "
+        f"Epoch [{epoch+1}/{EPOCHS}] | "
         f"Train Loss: {epoch_loss:.4f} | "
         f"Train Acc: {train_accuracy:.2f}% | "
         f"Valid Loss: {valid_loss:.4f} | "
@@ -90,7 +90,7 @@ for epochs in range(NUM_EPOCHS):
 
         best_valid_loss = valid_loss
     
-        torch.save(model.state_dict(), "best_model.pth")
+        torch.save(model.state_dict(), MODEL_PATH)
     
         print("Best model saved!")
 

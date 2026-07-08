@@ -6,7 +6,7 @@ from pathlib import Path
 # تنظیمات
 # -----------------------------
 SOURCE_DIR = Path("dataset")      # پوشه‌ای که cat.* و dog.* داخل آن هستند
-DEST_DIR = Path("data")
+DEST_DIR = Path("dataset")
 
 TRAIN_RATIO = 0.7
 VALID_RATIO = 0.15
