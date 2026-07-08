@@ -19,6 +19,9 @@ for epochs in range(NUM_EPOCHS):
     
     model.train()
     running_loss = 0.0
+
+    correct = 0
+    total = 0
     
     for images, labels in train_loader:
     
@@ -30,19 +33,33 @@ for epochs in range(NUM_EPOCHS):
         outputs = model(images)
     
         loss = criterion(outputs, labels)
-    
+
+        _, predicted = torch.max(outputs, 1)
+
+        correct += (predicted == labels).sum().item()
+        total += labels.size(0)
+        
         loss.backward()
         optimizer.step()
     
         running_loss += loss.item()
     
     epoch_loss = running_loss / len(train_loader)
-    print(f"Epoch [{epoch+1}/{NUM_EPOCHS}] - Loss: {epoch_loss:.4f}")
+    train_accuracy = 100 * correct / total
+    print(
+        f"Epoch [{epoch+1}/{NUM_EPOCHS}] | "
+        f"Train Loss: {epoch_loss:.4f} | "
+        f"Train Acc: {train_accuracy:.2f}% | "
+        f"Valid Loss: {valid_loss:.4f}"
+    )
 
     model.eval()
 
     valid_loss = 0.0
 
+    valid_correct = 0
+    valid_total = 0
+    
     with torch.no_grad():
         for images, labels in valid_loader:
 
@@ -54,12 +71,19 @@ for epochs in range(NUM_EPOCHS):
             loss = criterion(outputs, labels)
 
             valid_loss += loss.item()
+            _, predicted = torch.max(outputs, 1)
+            valid_correct += (predicted == labels).sum().item()
 
+            valid_total += labels.size(0)
     valid_loss = valid_loss / len(valid_loader)
+    valid_accuracy = 100 * valid_correct / valid_total
+    
     print(
         f"Epoch [{epoch+1}/{NUM_EPOCHS}] | "
         f"Train Loss: {epoch_loss:.4f} | "
-        f"Valid Loss: {valid_loss:.4f}"
+        f"Train Acc: {train_accuracy:.2f}% | "
+        f"Valid Loss: {valid_loss:.4f} | "
+        f"Valid Acc: {valid_accuracy:.2f}%"
     )
 
     if valid_loss < best_valid_loss:
